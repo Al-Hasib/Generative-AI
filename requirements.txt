@@ -5,3 +5,4 @@ langchain-community
 langchain-anthropic
 langchain-google-genai
 ipykernel
+pypdf
