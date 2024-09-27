@@ -7,3 +7,5 @@ langchain-google-genai
 ipykernel
 pypdf
 chromadb
+langchain_huggingface
+langchain-core
