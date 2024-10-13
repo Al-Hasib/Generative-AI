@@ -10,7 +10,8 @@ import streamlit as st
 import pandas as pd
 import json
 import time
-
+import yagmail
+import pandas as pd
 
 
 prompt_template = ChatPromptTemplate.from_messages([
@@ -51,6 +52,37 @@ def resume_checker(resume, job_description,llm):
     result = Chain.invoke({"resume":resume, "Job_description":job_description})
     return result
 
+def send_mail(data_path):
+    csv_data = pd.read_csv(data_path)
+    yag = yagmail.SMTP('alhasib.iu.cse@gmail.com', 'iyto heuk fbka mysg')
+    for i in range(csv_data.shape[0]):
+        data = csv_data.iloc[i]
+        name = data['Name of resume holder']
+        email = data['email']
+        score = data['Matching Score in percentage']
+        if "%" in score:
+            score = int(score.replace("%",""))
+        else:
+            score = int(score)
+        #strong_zone = data['strong zone']
+        weak_zone = data['Lack of Knowledge']
+
+        # print(name, score, strong_zone, week_zone)
+        if score < 70:
+            message = f"Hello {name},\n\n \
+            Thank you for your application on Machine Learning position in our company. But we can't consider you for the further process. We find some week zones given below that doesn't match with our company.\
+            you can upgrade yourself & try later.\n\n \
+                {weak_zone}\n\n \
+            Best Regards,\n Md Abdullah Al Hasib"
+        
+        else:
+            message = f"Hello {name},\n\n \
+            Thank you for your application on Machine Learning position in our company. We  consider you for the further process. \n\n \
+            Best Regards,\n \
+            Md Abdullah Al Hasib"
+        
+        yag.send(email, 'Response to Your ML Engineer Application', message)
+
 
 
 def main():
@@ -61,19 +93,20 @@ def main():
     # checker = resume_checker(resume=resume, job_description=Job_description)
     # print(checker)
 
-    st.title("Resume Screening Project")
+    st.title("Resume Screening/Parsing Project")
 
     # File uploader
     # uploaded_file = st.file_uploader("Upload a PDF file ", type="pdf")
     # # print(uploaded_file)
     # st.write(load_pdf(uploaded_file))
 
+    
     folder_path = st.text_input("Enter the path of the Resume folder")
     Job_description = st.text_area("Enter Job Description:", height=300)
     information_list = []
     if st.button("Submit"):
         for i in os.listdir(folder_path):
-            time.sleep(10) 
+            time.sleep(2) 
             pdf_path = os.path.join(folder_path,i)
             resume = (load_pdf(pdf_path))
             # st.write(resume)
@@ -92,17 +125,6 @@ def main():
             # Convert to DataFrame
             data = json.loads(str(checker))
             information_list.append(data)
-            
-
-        # df = pd.DataFrame({
-        #     "Name of resume holder": [data["Name of resume holder"]],
-        #     "email": [data["email"]],
-        #     "is_perfect": [data["is_perfect"]],
-        #     "is_okay": [data["is_okay"]],
-        #     "Matching Score in percentage": [data["Matching Score in percentage"]],
-        #     "strong zone": ["\n".join(data["strong zone"])],
-        #     "Lack of Knowledge": ["\n".join(data["Lack of Knowledge"])]
-        # })
 
         df = pd.DataFrame(information_list)
 
@@ -110,6 +132,15 @@ def main():
 
         # Display the dataframe
         st.write(df)
+
+    # Create a checkbox
+
+    agree = st.checkbox("Do You want to Respond through Mail?")
+
+    if agree:
+        data_path = "resume screening.csv"
+        send_mail(data_path=data_path)
+        st.write("All mails have been sent. Thank You!!")
 
 
 
