@@ -9,6 +9,7 @@ import fitz
 import streamlit as st
 import pandas as pd
 import json
+import time
 
 
 
@@ -70,41 +71,45 @@ def main():
     folder_path = st.text_input("Enter the path of the Resume folder")
     Job_description = st.text_area("Enter Job Description:", height=300)
     information_list = []
-    for i in os.listdir(folder_path):
-        pdf_path = os.path.join(folder_path,i)
-        resume = (load_pdf(pdf_path))
-        # st.write(resume)
+    if st.button("Submit"):
+        for i in os.listdir(folder_path):
+            time.sleep(10) 
+            pdf_path = os.path.join(folder_path,i)
+            resume = (load_pdf(pdf_path))
+            # st.write(resume)
 
-        # Create a large text area for user input
-        # st.write(Job_description)
+            # Create a large text area for user input
+            # st.write(Job_description)
 
-        checker = resume_checker(resume=resume, job_description=Job_description,llm=llm)
+            checker = resume_checker(resume=resume, job_description=Job_description,llm=llm)
 
-        print(type(checker))
-        st.write(checker)
+            print(type(checker))
+            st.write(checker)
 
-        checker = checker.replace('```json', "").replace('```', "")
 
-        # Convert to DataFrame
-        data = json.loads(str(checker))
-        information_list.append(data)
+            checker = checker.replace('```json', "").replace('```', "")
 
-    # df = pd.DataFrame({
-    #     "Name of resume holder": [data["Name of resume holder"]],
-    #     "email": [data["email"]],
-    #     "is_perfect": [data["is_perfect"]],
-    #     "is_okay": [data["is_okay"]],
-    #     "Matching Score in percentage": [data["Matching Score in percentage"]],
-    #     "strong zone": ["\n".join(data["strong zone"])],
-    #     "Lack of Knowledge": ["\n".join(data["Lack of Knowledge"])]
-    # })
+            # Convert to DataFrame
+            data = json.loads(str(checker))
+            information_list.append(data)
+            
 
-    df = pd.DataFrame(information_list)
+        # df = pd.DataFrame({
+        #     "Name of resume holder": [data["Name of resume holder"]],
+        #     "email": [data["email"]],
+        #     "is_perfect": [data["is_perfect"]],
+        #     "is_okay": [data["is_okay"]],
+        #     "Matching Score in percentage": [data["Matching Score in percentage"]],
+        #     "strong zone": ["\n".join(data["strong zone"])],
+        #     "Lack of Knowledge": ["\n".join(data["Lack of Knowledge"])]
+        # })
 
-    df.to_csv("resume screening.csv", index=False)
+        df = pd.DataFrame(information_list)
 
-    # Display the dataframe
-    st.write(df)
+        df.to_csv("resume screening.csv", index=False)
+
+        # Display the dataframe
+        st.write(df)
 
 
 
