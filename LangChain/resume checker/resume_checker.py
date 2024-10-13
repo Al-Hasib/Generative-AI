@@ -52,6 +52,7 @@ def resume_checker(resume, job_description,llm):
     result = Chain.invoke({"resume":resume, "Job_description":job_description})
     return result
 
+# function to send mail
 def send_mail(data_path):
     csv_data = pd.read_csv(data_path)
     yag = yagmail.SMTP('alhasib.iu.cse@gmail.com', 'iyto heuk fbka mysg')
