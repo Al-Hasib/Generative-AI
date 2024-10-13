@@ -20,7 +20,7 @@ prompt_template = ChatPromptTemplate.from_messages([
      Resume: {resume} \n \
      Job Description: {Job_description} \n \
      Based on the Job description, does the resume is perfect for the JOB and What's the percentage of Matching the resume against the JOB description. \
-     The JSON Output Key will be Name of resume holder, email, is_perfect,is_okay, Matching Score in percentage, strong zone, Lack of Knowledge")
+     The JSON Output Key will be Name, email, is_perfect,is_okay, Matching Score in percentage, strong zone, Lack of Knowledge")
 ])
 
 # Function to extract text from PDF
@@ -58,7 +58,7 @@ def send_mail(data_path):
     yag = yagmail.SMTP('alhasib.iu.cse@gmail.com', 'iyto heuk fbka mysg')
     for i in range(csv_data.shape[0]):
         data = csv_data.iloc[i]
-        name = data['Name of resume holder']
+        name = data['Name']
         email = data['email']
         score = data['Matching Score in percentage']
         if "%" in score:
