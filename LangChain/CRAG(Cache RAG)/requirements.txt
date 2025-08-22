@@ -1,0 +1,7 @@
+faiss-cpu
+numpy
+sentence-transformers
+langchain
+PyPDF2
+python-docx
+groq
